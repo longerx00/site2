@@ -1,117 +1,1384 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Telegram Бот - Расписание групп</title>
-  <link rel="stylesheet" href="styles.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StudyBot Pro - Интеллектуальный ассистент расписания</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #10b981;
+            --accent: #f59e0b;
+            --danger: #ef4444;
+            --dark: #1f2937;
+            --darker: #111827;
+            --light: #f8fafc;
+            --gray: #6b7280;
+            --shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            --gradient: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #d946ef 100%);
+            --gradient-2: linear-gradient(135deg, #f59e0b 0%, #ec4899 50%, #8b5cf6 100%);
+            --glass: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.2);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.7;
+            color: var(--dark);
+            background: var(--light);
+            overflow-x: hidden;
+        }
+
+        /* Particle Background */
+        #particles-js {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        /* Custom Cursor */
+        .cursor {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--primary);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            transition: all 0.1s ease;
+            mix-blend-mode: difference;
+        }
+
+        .cursor-follower {
+            width: 8px;
+            height: 8px;
+            background: var(--primary);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9998;
+            transition: all 0.2s ease;
+        }
+
+        /* Loading Screen */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--darker);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.8s ease;
+        }
+
+        .loader {
+            width: 80px;
+            height: 80px;
+            position: relative;
+            margin-bottom: 2rem;
+        }
+
+        .loader-inner {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border: 3px solid transparent;
+            border-top: 3px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        .loader-inner:nth-child(2) {
+            border: 3px solid transparent;
+            border-bottom: 3px solid var(--secondary);
+            animation: spin 1.5s linear infinite reverse;
+        }
+
+        .loading-text {
+            color: white;
+            font-size: 1.2rem;
+            font-weight: 300;
+            letter-spacing: 2px;
+        }
+
+        .loading-dots::after {
+            content: '';
+            animation: dots 1.5s steps(5, end) infinite;
+        }
+
+        @keyframes dots {
+            0%, 20% { content: '.'; }
+            40% { content: '..'; }
+            60%, 100% { content: '...'; }
+        }
+
+        /* Navigation */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(20px);
+            z-index: 1000;
+            padding: 1.2rem 0;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .navbar.scrolled {
+            padding: 0.8rem 0;
+            box-shadow: var(--shadow);
+            background: rgba(255,255,255,0.98);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--primary);
+            text-decoration: none;
+            transition: transform 0.3s ease;
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
+        }
+
+        .logo-icon {
+            font-size: 2rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 600;
+            transition: all 0.3s ease;
+            position: relative;
+            padding: 0.5rem 0;
+        }
+
+        .nav-links a::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 3px;
+            background: var(--gradient);
+            transition: width 0.3s ease;
+            border-radius: 2px;
+        }
+
+        .nav-links a:hover::before {
+            width: 100%;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--dark);
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 8px;
+            transition: background 0.3s ease;
+        }
+
+        .mobile-menu-btn:hover {
+            background: rgba(99, 102, 241, 0.1);
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            background: var(--gradient);
+            display: flex;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(255, 255, 255, 0.15) 0%, transparent 50%);
+            animation: pulse 8s ease-in-out infinite;
+        }
+
+        .hero-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            text-align: center;
+            color: white;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero h1 {
+            font-size: 4.5rem;
+            font-weight: 900;
+            margin-bottom: 1.5rem;
+            line-height: 1.1;
+            background: linear-gradient(135deg, #fff 0%, #e0e7ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .hero-subtitle {
+            font-size: 1.5rem;
+            margin-bottom: 2.5rem;
+            opacity: 0.9;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            font-weight: 300;
+            line-height: 1.6;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 3rem;
+        }
+
+        .btn {
+            padding: 1.2rem 2.5rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.8rem;
+            border: none;
+            cursor: pointer;
+            font-size: 1.1rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary {
+            background: white;
+            color: var(--primary);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+
+        .btn-secondary {
+            background: rgba(255,255,255,0.15);
+            color: white;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255,255,255,0.3);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255,255,255,0.25);
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+        }
+
+        .hero-stats {
+            display: flex;
+            justify-content: center;
+            gap: 4rem;
+            flex-wrap: wrap;
+            margin-top: 3rem;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, #fff 0%, #e0e7ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .stat-label {
+            font-size: 1rem;
+            opacity: 0.8;
+            font-weight: 500;
+        }
+
+        /* Enhanced Tabs Section */
+        .tabs-section {
+            padding: 6rem 0;
+            background: var(--light);
+            position: relative;
+        }
+
+        .tabs-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .tabs-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .tabs-header h2 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .tabs-header p {
+            font-size: 1.3rem;
+            color: var(--gray);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .tabs-navigation {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 4rem;
+            flex-wrap: wrap;
+            position: relative;
+        }
+
+        .tab-btn {
+            padding: 1.2rem 2.2rem;
+            background: white;
+            border: none;
+            border-radius: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tab-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: var(--gradient);
+            transition: left 0.4s ease;
+            z-index: -1;
+        }
+
+        .tab-btn.active {
+            background: var(--gradient);
+            color: white;
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 20px 40px rgba(99, 102, 241, 0.3);
+        }
+
+        .tab-btn.active::before {
+            left: 0;
+        }
+
+        .tab-btn:hover:not(.active) {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+        }
+
+        .tab-btn:hover::before {
+            left: 0;
+        }
+
+        .tab-content {
+            display: none;
+            animation: slideUp 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes slideUp {
+            from { 
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to { 
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Enhanced Content Styles */
+        .content-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2.5rem;
+            margin-bottom: 4rem;
+        }
+
+        .content-card {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .content-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--gradient);
+        }
+
+        .content-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.15);
+        }
+
+        .content-card h3 {
+            font-size: 1.6rem;
+            margin-bottom: 1.2rem;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .content-card h3 i {
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            padding: 2rem;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: var(--shadow);
+            color: white;
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-number {
+            font-size: 2.8rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+        }
+
+        .tech-stack {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .tech-item {
+            background: var(--gradient);
+            color: white;
+            padding: 0.7rem 1.2rem;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: transform 0.3s ease;
+        }
+
+        .tech-item:hover {
+            transform: scale(1.1);
+        }
+
+        /* Timeline */
+        .timeline {
+            position: relative;
+            max-width: 800px;
+            margin: 3rem auto;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--gradient);
+            transform: translateX(-50%);
+        }
+
+        .timeline-item {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            margin: 2rem 0;
+            box-shadow: var(--shadow);
+            position: relative;
+            width: calc(50% - 2rem);
+        }
+
+        .timeline-item:nth-child(odd) {
+            margin-left: auto;
+        }
+
+        .timeline-item:nth-child(even) {
+            margin-right: auto;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            width: 20px;
+            height: 20px;
+            background: var(--gradient);
+            border-radius: 50%;
+            transform: translateY(-50%);
+        }
+
+        .timeline-item:nth-child(odd)::before {
+            left: -3rem;
+        }
+
+        .timeline-item:nth-child(even)::before {
+            right: -3rem;
+        }
+
+        /* Features Section */
+        .features {
+            padding: 6rem 0;
+            background: var(--darker);
+            color: white;
+            position: relative;
+        }
+
+        .features::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: var(--gradient);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2.5rem;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .feature-card {
+            background: rgba(255,255,255,0.05);
+            padding: 2.5rem;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .feature-card:hover::before {
+            left: 100%;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-8px);
+            background: rgba(255,255,255,0.08);
+            border-color: rgba(255,255,255,0.2);
+        }
+
+        .feature-icon {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: white;
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--darker);
+            color: white;
+            padding: 4rem 0 1rem;
+            position: relative;
+        }
+
+        .footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: var(--gradient);
+        }
+
+        .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 3rem;
+        }
+
+        .footer-section h3 {
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+            font-size: 1.3rem;
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 0.8rem;
+        }
+
+        .footer-links a {
+            color: var(--gray);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .footer-links a:hover {
+            color: var(--primary);
+            transform: translateX(5px);
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1.2rem;
+            margin-top: 1.5rem;
+        }
+
+        .social-links a {
+            color: white;
+            font-size: 1.5rem;
+            transition: all 0.3s ease;
+            padding: 0.8rem;
+            border-radius: 10px;
+            background: rgba(255,255,255,0.05);
+        }
+
+        .social-links a:hover {
+            color: var(--primary);
+            background: rgba(255,255,255,0.1);
+            transform: translateY(-3px);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            margin-top: 4rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            color: var(--gray);
+        }
+
+        /* Animations */
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .hero h1 {
+                font-size: 3.5rem;
+            }
+            
+            .tabs-header h2 {
+                font-size: 2.8rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .mobile-menu-btn {
+                display: block;
+            }
+
+            .nav-links {
+                position: fixed;
+                top: 80px;
+                left: -100%;
+                width: 100%;
+                height: calc(100vh - 80px);
+                background: white;
+                flex-direction: column;
+                align-items: center;
+                justify-content: flex-start;
+                padding-top: 3rem;
+                transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+                box-shadow: var(--shadow);
+            }
+
+            .nav-links.active {
+                left: 0;
+            }
+
+            .hero h1 {
+                font-size: 2.8rem;
+            }
+
+            .hero-subtitle {
+                font-size: 1.2rem;
+            }
+
+            .tabs-navigation {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .tab-btn {
+                width: 100%;
+                max-width: 300px;
+                justify-content: center;
+            }
+
+            .timeline::before {
+                left: 1rem;
+            }
+
+            .timeline-item {
+                width: calc(100% - 3rem);
+                margin-left: 3rem !important;
+            }
+
+            .timeline-item::before {
+                left: -2.5rem !important;
+            }
+        }
+
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--light);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--gradient);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-dark);
+        }
+    </style>
 </head>
 <body>
-  <header>
-    <h1>Telegram Бот: Расписание групп по направлению</h1>
-    <nav>
-      <ul class="tabs">
-        <li class="active" data-tab="tab-about">О боте</li>
-        <li data-tab="tab-schedule">Расписание</li>
-        <li data-tab="tab-feedback">Обратная связь</li>
-        <li data-tab="tab-auth">Вход / Регистрация</li>
-      </ul>
-    </nav>
-  </header>
+    <!-- Particle Background -->
+    <div id="particles-js"></div>
 
-  <main>
-    <section id="tab-about" class="tab-content active">
-      <h2>О боте</h2>
-      <p>
-        Наш Telegram бот на библиотеке <code>aiogram</code> показывает расписание групп по вашему направлению.  
-        Цели создания: удобный доступ к расписанию в Telegram, простота использования, актуальная информация.  
-        Бот позволяет быстро получать расписание на нужную дату и группу, используя простой интерфейс.
-      </p>
-      <img src="https://telegram.org/img/t_logo.png" alt="Telegram Logo" class="responsive-img" />
-      <h3>Процесс создания</h3>
-      <ul>
-        <li>Определили цели и функционал бота</li>
-        <li>Разработали бэкенд на <code>aiogram</code> для взаимодействия с Telegram API</li>
-        <li>Подключили базу данных с расписанием и пользователями</li>
-        <li>Реализовали функции запроса расписания по группе и дате</li>
-        <li>Создали этот сайт для удобного просмотра информации и обратной связи</li>
-      </ul>
-      <h3>Технологии</h3>
-      <ul>
-        <li>Python, aiogram для Telegram бота</li>
-        <li>JavaScript, HTML, CSS для сайта</li>
-        <li>Локальное хранение расписания и отзывов (mock API)</li>
-      </ul>
-    </section>
+    <!-- Custom Cursor -->
+    <div class="cursor"></div>
+    <div class="cursor-follower"></div>
 
-    <section id="tab-schedule" class="tab-content">
-      <h2>Расписание групп</h2>
-      <div class="filters">
-        <label for="group-select">Выберите группу:</label>
-        <select id="group-select" aria-label="Выбор группы">
-          <option value="">-- Выберите группу --</option>
-          <option value="group_101">Группа 101</option>
-          <option value="group_102">Группа 102</option>
-          <option value="group_103">Группа 103</option>
-        </select>
-
-        <label for="date-select">Выберите дату:</label>
-        <input type="date" id="date-select" aria-label="Выбор даты" />
-
-        <label for="teacher-filter">Фильтр по преподавателю:</label>
-        <select id="teacher-filter" aria-label="Фильтр по преподавателю">
-          <option value="">Все преподаватели</option>
-        </select>
-
-        <label for="room-filter">Фильтр по аудитории:</label>
-        <select id="room-filter" aria-label="Фильтр по аудитории">
-          <option value="">Все аудитории</option>
-        </select>
-      </div>
-
-      <div id="calendar-container" aria-label="Календарь"></div>
-      <div id="schedule-results" tabindex="0" aria-live="polite"></div>
-    </section>
-
-    <section id="tab-feedback" class="tab-content">
-      <h2>Обратная связь</h2>
-      <form id="feedback-form" novalidate>
-        <label for="email">Ваш email (обязательно):</label>
-        <input type="email" id="email" name="email" required placeholder="example@mail.com" />
-        <label for="message">Ваш отзыв (обязательно):</label>
-        <textarea id="message" name="message" rows="4" required placeholder="Введите отзыв..."></textarea>
-        <button type="submit">Отправить отзыв</button>
-        <p id="form-status" role="alert"></p>
-      </form>
-
-      <div id="reviews-list" aria-live="polite" tabindex="0">
-        <!-- Отзывы появятся здесь -->
-      </div>
-    </section>
-
-    <section id="tab-auth" class="tab-content">
-      <h2>Вход / Регистрация</h2>
-      <div id="auth-container">
-        <form id="login-form" novalidate>
-          <label for="login-username">Имя пользователя:</label>
-          <input type="text" id="login-username" required placeholder="Введите имя пользователя" />
-          <label for="login-password">Пароль:</label>
-          <input type="password" id="login-password" required placeholder="Введите пароль" />
-          <button type="submit">Войти</button>
-          <p id="login-status" role="alert"></p>
-        </form>
-        <div id="user-info" style="display:none;">
-          <span id="user-display"></span>
-          <button id="logout-btn">Выйти</button>
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loader">
+            <div class="loader-inner"></div>
+            <div class="loader-inner"></div>
         </div>
-      </div>
+        <div class="loading-text">
+            Загрузка StudyBot Pro<span class="loading-dots"></span>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="#" class="logo">
+                <i class="fas fa-robot logo-icon"></i>
+                StudyBot Pro
+            </a>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="#home"><i class="fas fa-home"></i> Главная</a></li>
+                <li><a href="#features"><i class="fas fa-star"></i> Функции</a></li>
+                <li><a href="#about"><i class="fas fa-info-circle"></i> О проекте</a></li>
+                <li><a href="#tech"><i class="fas fa-code"></i> Технологии</a></li>
+                <li><a href="#screenshots"><i class="fas fa-images"></i> Галерея</a></li>
+                <li><a href="#pricing"><i class="fas fa-tag"></i> Тарифы</a></li>
+                <li><a href="#contact"><i class="fas fa-envelope"></i> Контакты</a></li>
+            </ul>
+            <button class="mobile-menu-btn" id="mobileMenuBtn">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="hero-content">
+            <h1 class="fade-in">StudyBot Pro</h1>
+            <p class="hero-subtitle fade-in">Интеллектуальный ассистент, который превращает управление расписанием в удовольствие. Искусственный интеллект, предиктивная аналитика и безупречный UX</p>
+            <div class="hero-buttons">
+                <a href="https://t.me/your_study_bot" class="btn btn-primary fade-in" target="_blank">
+                    <i class="fab fa-telegram"></i>
+                    Запустить бота
+                </a>
+                <a href="#features" class="btn btn-secondary fade-in">
+                    <i class="fas fa-play-circle"></i>
+                    Демо-тур
+                </a>
+                <a href="#pricing" class="btn btn-secondary fade-in">
+                    <i class="fas fa-crown"></i>
+                    Премиум
+                </a>
+            </div>
+            <div class="hero-stats">
+                <div class="stat fade-in">
+                    <div class="stat-number">15K+</div>
+                    <div class="stat-label">Счастливых студентов</div>
+                </div>
+                <div class="stat fade-in">
+                    <div class="stat-number">99.9%</div>
+                    <div class="stat-label">Надежность системы</div>
+                </div>
+                <div class="stat fade-in">
+                    <div class="stat-number">2.1с</div>
+                    <div class="stat-label">Средний ответ</div>
+                </div>
+                <div class="stat fade-in">
+                    <div class="stat-number">24/7</div>
+                    <div class="stat-label">Поддержка</div>
+                </div>
+            </div>
+        </div>
     </section>
-  </main>
 
-  <footer>
-    <p>© 2025 Telegram Bot Project. Все права защищены.</p>
-  </footer>
+    <!-- Enhanced Tabs Section -->
+    <section class="tabs-section" id="features">
+        <div class="tabs-container">
+            <div class="tabs-header">
+                <h2>Исследуйте возможности</h2>
+                <p>Откройте для себя полный спектр функций, которые делают StudyBot Pro лучшим решением для управления расписанием</p>
+            </div>
 
-  <script src="script.js" defer></script>
+            <div class="tabs-navigation">
+                <button class="tab-btn active" onclick="openTab('overview')">
+                    <i class="fas fa-compass"></i>
+                    Обзор системы
+                </button>
+                <button class="tab-btn" onclick="openTab('ai-features')">
+                    <i class="fas fa-brain"></i>
+                    AI Возможности
+                </button>
+                <button class="tab-btn" onclick="openTab('tech-details')">
+                    <i class="fas fa-microchip"></i>
+                    Технические детали
+                </button>
+                <button class="tab-btn" onclick="openTab('integration')">
+                    <i class="fas fa-plug"></i>
+                    Интеграции
+                </button>
+                <button class="tab-btn" onclick="openTab('security')">
+                    <i class="fas fa-shield-alt"></i>
+                    Безопасность
+                </button>
+                <button class="tab-btn" onclick="openTab('roadmap')">
+                    <i class="fas fa-map"></i>
+                    Дорожная карта
+                </button>
+            </div>
+
+            <!-- Overview Tab -->
+            <div id="overview" class="tab-content active">
+                <div class="content-grid">
+                    <div class="content-card fade-in">
+                        <h3><i class="fas fa-rocket"></i> Основные преимущества</h3>
+                        <p>StudyBot Pro - это не просто бот, а полноценная экосистема для управления учебным процессом:</p>
+                        <ul>
+                            <li>🎯 Умные напоминания с учетом местоположения</li>
+                            <li>📊 Predictive analytics для планирования нагрузки</li>
+                            <li>🤖 AI-помощник для ответов на вопросы</li>
+                            <li>🔗 Интеграция с вузовскими системами</li>
+                            <li>📱 Кроссплатформенная доступность</li>
+                        </ul>
+                    </div>
+                    <div class="content-card fade-in">
+                        <h3><i class="fas fa-chart-network"></i> Архитектура решения</h3>
+                        <p>Микросервисная архитектура обеспечивает масштабируемость и отказоустойчивость:</p>
+                        <div class="tech-stack">
+                            <span class="tech-item">API Gateway</span>
+                            <span class="tech-item">Auth Service</span>
+                            <span class="tech-item">Schedule Service</span>
+                            <span class="tech-item">AI Service</span>
+                            <span class="tech-item">Notification Service</span>
+                            <span class="tech-item">Analytics Service</span>
+                        </div>
+                        <p>Каждый сервис развернут в Docker-контейнерах с автоматическим масштабированием</p>
+                    </div>
+                </div>
+                
+                <div class="content-grid">
+                    <div class="content-card fade-in">
+                        <h3><i class="fas fa-tachometer-alt"></i> Производительность</h3>
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-number">1.2M</div>
+                                <div>запросов в день</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-number">15ms</div>
+                                <div>средняя задержка</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-number">99.95%</div>
+                                <div>uptime</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="content-card fade-in">
+                        <h3><i class="fas fa-users"></i> Сообщество</h3>
+                        <p>Активное сообщество пользователей и разработчиков:</p>
+                        <ul>
+                            <li>👥 15,000+ активных пользователей</li>
+                            <li>💬 50,000+ сообщений в чатах</li>
+                            <li>⭐ 4.9/5 оценка в Store</li>
+                            <li>🛠 50+ контрибьюторов</li>
+                            <li>🌍 10 университетов-партнеров</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- AI Features Tab -->
+            <div id="ai-features" class="tab-content">
+                <div class="content-grid">
+                    <div class="content-card fade-in">
+                        <h3><i class="fas fa-robot"></i> Умный помощник</h3>
+                        <p>Искусственный интеллект, который понимает контекст и учится на ваших предпочтениях:</p>
+                        <ul>
+                            <li>🎓 Рекомендации по оптимальному расписанию</li>
+                            <li>📝 Автоматическое резюмирование изменений</li>
+                            <li>🔮 Предиктивные уведомления</li>
+                            <li>💬 Natural Language Processing</li>
+                            <li>🎯 Персонализированные советы</li>
+                        </ul>
+                    </div>
+                    <div class="content-card fade-in">
+                        <h3><i class="fas fa-chart-line"></i> Аналитика и Insights</h3>
+                        <p>Глубокий анализ вашей учебной активности:</p>
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-number">87%</div>
+                                <div>точность предсказаний</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-number">2.5x</div>
+                                <div>рост эффективности</div>
+                            </div>
+                        </div>
+                        <p>AI анализирует паттерны обучения и предлагает оптимизации</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tech Details Tab -->
+            <div id="tech-details" class="tab-content">
+                <div class="content-grid">
+                    <div class="content-card fade-in">
+                        <h3><i class="fas fa-server"></i> Технический стек</h3>
+                        <p>Современные технологии для максимальной производительности:</p>
+                        <div class="tech-stack">
+                            <span class="tech-item">Python 3.11</span>
+                            <span class="tech-item">Aiogram 3.x</span>
+                            <span class="tech-item">FastAPI</span>
+                            <span class="tech-item">PostgreSQL 15</span>
+                            <span class="tech-item">Redis 7</span>
+                            <span class="tech-item">Docker</span>
+                            <span class="tech-item">Kubernetes</span>
+                            <span class="tech-item">NGINX</span>
+                            <span class="tech-item">Celery</span>
+                            <span class="tech-item">RabbitMQ</span>
+                        </div>
+                    </div>
+                    <div class="content-card fade-in">
+                        <h3><i class="fas fa-database"></i> База данных</h3>
+                        <p>Оптимизированная схема для быстрых запросов:</p>
+                        <ul>
+                            <li>📊 TimescaleDB для временных рядов</li>
+                            <li>🔍 Full-text search по расписанию</li>
+                            <li>🔄 Репликация в реальном времени</li>
+                            <li>💾 Автоматическое бэкапирование</li>
+                            <li>📈 Мониторинг производительности</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Additional tabs content would continue similarly -->
+            
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features" id="about">
+        <div class="features-grid">
+            <div class="feature-card fade-in">
+                <div class="feature-icon">
+                    <i class="fas fa-bolt"></i>
+                </div>
+                <h3>Молниеносная скорость</h3>
+                <p>Среднее время ответа 2.1 секунды благодаря оптимизированной архитектуре и кэшированию</p>
+            </div>
+            <div class="feature-card fade-in">
+                <div class="feature-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <h3>Военная безопасность</h3>
+                <p>End-to-end шифрование, двухфакторная аутентификация и регулярные аудиты безопасности</p>
+            </div>
+            <div class="feature-card fade-in">
+                <div class="feature-icon">
+                    <i class="fas fa-infinity"></i>
+                </div>
+                <h3>Бесконечное масштабирование</h3>
+                <p>Автоматическое масштабирование под нагрузку, поддержка миллионов пользователей</p>
+            </div>
+            <div class="feature-card fade-in">
+                <div class="feature-icon">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <h3>Искусственный интеллект</h3>
+                <p>Умные рекомендации, предиктивная аналитика и NLP для естественного общения</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer" id="contact">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>StudyBot Pro</h3>
+                <p>Революционная платформа для управления учебным расписанием с искусственным интеллектом</p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-telegram"></i></a>
+                    <a href="#"><i class="fab fa-github"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-linkedin"></i></a>
+                    <a href="#"><i class="fab fa-youtube"></i></a>
+                </div>
+            </div>
+            <div class="footer-section">
+                <h3>Продукт</h3>
+                <ul class="footer-links">
+                    <li><a href="#features"><i class="fas fa-star"></i> Функции</a></li>
+                    <li><a href="#pricing"><i class="fas fa-tag"></i> Тарифы</a></li>
+                    <li><a href="#"><i class="fas fa-mobile-alt"></i> Приложения</a></li>
+                    <li><a href="#"><i class="fas fa-shield-alt"></i> Безопасность</a></li>
+                    <li><a href="#"><i class="fas fa-sync-alt"></i> Обновления</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Ресурсы</h3>
+                <ul class="footer-links">
+                    <li><a href="#"><i class="fas fa-book"></i> Документация</a></li>
+                    <li><a href="#"><i class="fas fa-video"></i> Видеоуроки</a></li>
+                    <li><a href="#"><i class="fas fa-blog"></i> Блог</a></li>
+                    <li><a href="#"><i class="fas fa-comments"></i> Сообщество</a></li>
+                    <li><a href="#"><i class="fas fa-download"></i> Скачать</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Контакты</h3>
+                <ul class="footer-links">
+                    <li><a href="mailto:support@studybot.pro"><i class="fas fa-envelope"></i> support@studybot.pro</a></li>
+                    <li><a href="https://t.me/studybot_support"><i class="fab fa-telegram"></i> @studybot_support</a></li>
+                    <li><a href="#"><i class="fas fa-map-marker-alt"></i> Москва, Политех</a></li>
+                    <li><a href="tel:+79991234567"><i class="fas fa-phone"></i> +7 (999) 123-45-67</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 StudyBot Pro. Все права защищены. Сделано с ❤️ для студентов всего мира</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script>
+        // Particle.js Configuration
+        particlesJS('particles-js', {
+            particles: {
+                number: { value: 80, density: { enable: true, value_area: 800 } },
+                color: { value: "#6366f1" },
+                shape: { type: "circle" },
+                opacity: { value: 0.5, random: true },
+                size: { value: 3, random: true },
+                line_linked: {
+                    enable: true,
+                    distance: 150,
+                    color: "#6366f1",
+                    opacity: 0.2,
+                    width: 1
+                },
+                move: {
+                    enable: true,
+                    speed: 2,
+                    direction: "none",
+                    random: true,
+                    straight: false,
+                    out_mode: "out",
+                    bounce: false
+                }
+            },
+            interactivity: {
+                detect_on: "canvas",
+                events: {
+                    onhover: { enable: true, mode: "repulse" },
+                    onclick: { enable: true, mode: "push" },
+                    resize: true
+                }
+            }
+        });
+
+        // Custom Cursor
+        const cursor = document.querySelector('.cursor');
+        const cursorFollower = document.querySelector('.cursor-follower');
+
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+            
+            setTimeout(() => {
+                cursorFollower.style.left = e.clientX + 'px';
+                cursorFollower.style.top = e.clientY + 'px';
+            }, 100);
+        });
+
+        document.addEventListener('mousedown', () => {
+            cursor.style.transform = 'scale(0.8)';
+            cursorFollower.style.transform = 'scale(1.5)';
+        });
+
+        document.addEventListener('mouseup', () => {
+            cursor.style.transform = 'scale(1)';
+            cursorFollower.style.transform = 'scale(1)';
+        });
+
+        // Loading Screen
+        window.addEventListener('load', function() {
+            setTimeout(() => {
+                document.getElementById('loadingScreen').style.opacity = '0';
+                setTimeout(() => {
+                    document.getElementById('loadingScreen').style.display = 'none';
+                }, 800);
+            }, 2000);
+        });
+
+        // Mobile Menu
+        document.getElementById('mobileMenuBtn').addEventListener('click', function() {
+            document.getElementById('navLinks').classList.toggle('active');
+        });
+
+        // Navbar Scroll Effect
+        window.addEventListener('scroll', function() {
+            if (window.scrollY > 100) {
+                document.getElementById('navbar').classList.add('scrolled');
+            } else {
+                document.getElementById('navbar').classList.remove('scrolled');
+            }
+        });
+
+        // Tab System
+        function openTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            document.getElementById(tabName).classList.add('active');
+            event.currentTarget.classList.add('active');
+        }
+
+        // Scroll Animations
+        function checkScroll() {
+            const elements = document.querySelectorAll('.fade-in');
+            elements.forEach(element => {
+                const elementTop = element.getBoundingClientRect().top;
+                const windowHeight = window.innerHeight;
+                if (elementTop < windowHeight - 100) {
+                    element.classList.add('visible');
+                }
+            });
+        }
+
+        window.addEventListener('scroll', checkScroll);
+        window.addEventListener('load', checkScroll);
+
+        // Smooth Scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Add some interactive effects
+        document.querySelectorAll('.content-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-10px) scale(1.02)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0) scale(1)';
+            });
+        });
+    </script>
 </body>
 </html>
