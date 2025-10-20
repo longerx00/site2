@@ -3,109 +3,188 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Телеграм Бот Расписания</title>
+  <title>Телеграм Бот Расписания на aiogram</title>
   <link rel="stylesheet" href="styles.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>  
 </head>
 <body>
   <header>
-    <h1>Телеграм Бот Расписания на aiogram</h1>
-    <nav>
-      <ul class="tabs">
-        <li data-tab="about" class="active">О боте</li>
-        <li data-tab="process">Процесс создания</li>
-        <li data-tab="features">Функции и примеры</li>
-        <li data-tab="team">Наша команда</li>
-        <li data-tab="feedback">Обратная связь</li>
-      </ul>
-    </nav>
-    <div class="bot-link-container">
-      <a href="https://t.me/your_bot_username" target="_blank" class="bot-link" rel="noopener noreferrer">
-        Перейти к боту в Telegram
-      </a>
+    <div class="container header-container">
+      <h1>Телеграм Бот Расписания на <span>aiogram</span></h1>
+      <nav>
+        <ul class="tabs">
+          <li data-tab="about" class="active">О боте</li>
+          <li data-tab="process">Процесс создания</li>
+          <li data-tab="features">Функции</li>
+          <li data-tab="schedule">Расписание</li>
+          <li data-tab="team">Команда</li>
+          <li data-tab="feedback">Обратная связь</li>
+        </ul>
+      </nav>
+      <div class="header-buttons">
+        <a href="https://t.me/your_bot_username" target="_blank" class="btn btn-telegram" rel="noopener noreferrer">
+          <i class="fab fa-telegram"></i> Перейти к боту
+        </a>
+        <a href="https://github.com/your_repo" target="_blank" class="btn btn-github" rel="noopener noreferrer">
+          <i class="fab fa-github"></i> Репозиторий на GitHub
+        </a>
+      </div>
     </div>
   </header>
 
   <main>
-    <section id="about" class="tab-content active">
+    <section id="about" class="tab-content active container">
       <h2>Что такое наш Телеграм Бот?</h2>
-      <p>Наш бот — это удобный помощник, который показывает расписание групп по нашему учебному направлению. Написан с использованием <strong>aiogram</strong> — современной библиотеки для разработки Telegram ботов на Python.</p>
-      <img src="https://cdn-icons-png.flaticon.com/512/2111/2111646.png" alt="Telegram bot" class="image-center" />
-      <p>Он позволяет быстро получать актуальное расписание, не заходя в сложные системы, а просто написав боту в Телеграме.</p>
+      <p>Наш бот создан для студентов и преподавателей, чтобы быстро и удобно получать актуальное расписание групп по направлениям обучения прямо в Telegram.</p>
+      <p>Он написан на Python с использованием <strong>aiogram</strong> — мощной асинхронной библиотеки для создания Telegram ботов.</p>
+      <div class="about-flex">
+        <img src="https://cdn-icons-png.flaticon.com/512/2111/2111646.png" alt="Telegram bot" />
+        <div class="about-text">
+          <h3>Почему именно наш бот?</h3>
+          <ul>
+            <li>Интерактивность — бот понимает разные команды и подсказывает расписание.</li>
+            <li>Обновление в реальном времени — расписание всегда актуально.</li>
+            <li>Уведомления об изменениях — не пропустите важное.</li>
+            <li>Простота использования — не нужно заходить в сложные сайты.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="highlight">
+        <p>Попробуйте прямо сейчас: <a href="https://t.me/your_bot_username" target="_blank" rel="noopener noreferrer">https://t.me/your_bot_username</a></p>
+      </div>
     </section>
 
-    <section id="process" class="tab-content">
+    <section id="process" class="tab-content container">
       <h2>Процесс создания</h2>
-      <ol>
-        <li>Постановка целей — сделать удобный и быстрый доступ к расписанию через Telegram.</li>
-        <li>Выбор технологий — Python + aiogram для надёжной и быстрой разработки.</li>
-        <li>Разработка логики — реализация обработки команд и отображения расписания.</li>
-        <li>Тестирование и исправления — чтобы бот работал корректно и без сбоев.</li>
-        <li>Запуск и сопровождение — обновление расписания и добавление новых функций.</li>
-      </ol>
-      <img src="https://cdn-icons-png.flaticon.com/512/888/888879.png" alt="Process" class="image-center" />
+      <p>Создание бота — это сложный, но увлекательный процесс, который мы разделили на ключевые этапы:</p>
+      <div class="process-grid">
+        <div class="process-step">
+          <div class="step-number">1</div>
+          <h3>Постановка целей</h3>
+          <p>Определили задачи: удобный доступ к расписанию для студентов и преподавателей, простой интерфейс и высокая надёжность.</p>
+        </div>
+        <div class="process-step">
+          <div class="step-number">2</div>
+          <h3>Выбор технологий</h3>
+          <p>Выбрали Python и <code>aiogram</code> за простоту и асинхронность, что обеспечивает быстрый отклик бота.</p>
+        </div>
+        <div class="process-step">
+          <div class="step-number">3</div>
+          <h3>Разработка логики</h3>
+          <p>Реализовали обработку команд, парсинг расписания и генерацию ответов для пользователей.</p>
+        </div>
+        <div class="process-step">
+          <div class="step-number">4</div>
+          <h3>Тестирование</h3>
+          <p>Проводили комплексное тестирование на разных группах и сценариях для стабильной работы.</p>
+        </div>
+        <div class="process-step">
+          <div class="step-number">5</div>
+          <h3>Запуск и поддержка</h3>
+          <p>Обновляем расписание и расширяем функционал, чтобы бот оставался полезным и актуальным.</p>
+        </div>
+      </div>
+      <img src="https://cdn-icons-png.flaticon.com/512/888/888879.png" alt="Process" class="process-image" />
     </section>
 
-    <section id="features" class="tab-content">
-      <h2>Функции бота и примеры работы</h2>
-      <ul>
-        <li>Показ расписания групп по направлениям.</li>
-        <li>Поиск расписания по дате или группе.</li>
-        <li>Уведомления об изменениях в расписании.</li>
-        <li>Интерактивное меню для удобного навигации.</li>
+    <section id="features" class="tab-content container">
+      <h2>Функции бота</h2>
+      <ul class="features-list">
+        <li><i class="fas fa-calendar-alt"></i> Показ расписания групп с фильтрами по дате и направлению.</li>
+        <li><i class="fas fa-search"></i> Поиск расписания по группе или преподавателю.</li>
+        <li><i class="fas fa-bell"></i> Уведомления об изменениях в расписании.</li>
+        <li><i class="fas fa-robot"></i> Интерактивное меню и помощь по командам.</li>
+        <li><i class="fas fa-code"></i> Открытый исходный код с возможностью доработки.</li>
       </ul>
-      <img src="https://cdn-icons-png.flaticon.com/512/1006/1006559.png" alt="Features" class="image-center" />
-      <h3>Пример команды:</h3>
-      <pre>
-/schedule group_123
-      </pre>
-      <p>Бот покажет расписание для группы с ID <code>group_123</code>.</p>
+      <div class="code-example">
+        <h3>Пример команды для получения расписания:</h3>
+        <pre><code>/schedule group_123</code></pre>
+      </div>
+      <div class="code-example">
+        <h3>Пример Python-кода с aiogram:</h3>
+        <pre><code>from aiogram import Bot, Dispatcher, executor, types
+
+bot = Bot(token='YOUR_TOKEN')
+dp = Dispatcher(bot)
+
+@dp.message_handler(commands=['schedule'])
+async def send_schedule(message: types.Message):
+    group_id = message.get_args()
+    schedule = get_schedule_for_group(group_id)
+    await message.reply(schedule)
+
+if __name__ == '__main__':
+    executor.start_polling(dp)</code></pre>
+      </div>
     </section>
 
-    <section id="team" class="tab-content">
+    <section id="schedule" class="tab-content container">
+      <h2>Интерактивное расписание</h2>
+      <p>Выберите группу и дату, чтобы увидеть расписание занятий.</p>
+      <div class="schedule-filter">
+        <label for="group-select">Группа:</label>
+        <select id="group-select" aria-label="Выбор группы">
+          <option value="group_101">Группа 101</option>
+          <option value="group_102">Группа 102</option>
+          <option value="group_103">Группа 103</option>
+        </select>
+
+        <label for="date-select">Дата:</label>
+        <input type="date" id="date-select" aria-label="Выбор даты" />
+      </div>
+      <div id="schedule-results" class="schedule-results">
+        <!-- Здесь будет расписание -->
+      </div>
+    </section>
+
+    <section id="team" class="tab-content container">
       <h2>Наша команда</h2>
       <div class="team-container">
         <div class="team-member">
           <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Иван Иванов" />
           <h3>Иван Иванов</h3>
           <p>Главный разработчик и архитектор бота.</p>
+          <p><a href="https://linkedin.com/in/ivanivanov" target="_blank" rel="noopener noreferrer"><i class="fab fa-linkedin"></i> LinkedIn</a></p>
         </div>
         <div class="team-member">
           <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Мария Смирнова" />
           <h3>Мария Смирнова</h3>
           <p>Дизайнер интерфейсов и UX-специалист.</p>
+          <p><a href="https://twitter.com/mariasmirnova" target="_blank" rel="noopener noreferrer"><i class="fab fa-twitter"></i> Twitter</a></p>
         </div>
         <div class="team-member">
-          <img src="https://randomuser.me/api/portraits/men/54.jpg" alt="Алексей Петров" />
-          <h3>Алексей Петров</h3>
+          <img src="https://randomuser.me/api/portraits/men/58.jpg" alt="Алексей Кузнецов" />
+          <h3>Алексей Кузнецов</h3>
           <p>Тестировщик и специалист по качеству.</p>
+          <p><a href="https://github.com/aleksey" target="_blank" rel="noopener noreferrer"><i class="fab fa-github"></i> GitHub</a></p>
         </div>
       </div>
     </section>
 
-    <section id="feedback" class="tab-content">
+    <section id="feedback" class="tab-content container">
       <h2>Обратная связь</h2>
-      <p>Если у вас есть предложения или вопросы, напишите нам:</p>
+      <p>Оставьте свой отзыв или вопрос — мы обязательно ответим!</p>
       <form id="feedback-form" novalidate>
-        <label for="name">Ваше имя:</label>
-        <input type="text" id="name" name="name" placeholder="Иван" required />
-
+        <label for="name">Имя:</label>
+        <input type="text" id="name" name="name" placeholder="Ваше имя" required minlength="2" />
         <label for="email">Email:</label>
         <input type="email" id="email" name="email" placeholder="example@mail.com" required />
-
         <label for="message">Сообщение:</label>
-        <textarea id="message" name="message" rows="5" placeholder="Напишите ваше сообщение..." required></textarea>
-
-        <button type="submit">Отправить</button>
+        <textarea id="message" name="message" placeholder="Ваше сообщение" rows="5" required minlength="10"></textarea>
+        <button type="submit" class="btn btn-submit">Отправить</button>
+        <p id="form-status" role="alert" aria-live="polite"></p>
       </form>
-      <p id="form-message" class="form-message"></p>
     </section>
   </main>
 
   <footer>
-    <p>© 2025 Команда разработчиков бота</p>
+    <div class="container">
+      <p>© 2025 Телеграм Бот Расписания. Все права защищены.</p>
+      <p>Создано с ❤️ на aiogram и Python.</p>
+    </div>
   </footer>
 
-  <script src="scripts.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
