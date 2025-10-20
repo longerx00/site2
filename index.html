@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Телеграм Бот Расписания</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <header>
+    <h1>Телеграм Бот Расписания на aiogram</h1>
+    <nav>
+      <ul class="tabs">
+        <li data-tab="about" class="active">О боте</li>
+        <li data-tab="process">Процесс создания</li>
+        <li data-tab="features">Функции и примеры</li>
+        <li data-tab="team">Наша команда</li>
+        <li data-tab="feedback">Обратная связь</li>
+      </ul>
+    </nav>
+    <div class="bot-link-container">
+      <a href="https://t.me/your_bot_username" target="_blank" class="bot-link" rel="noopener noreferrer">
+        Перейти к боту в Telegram
+      </a>
+    </div>
+  </header>
+
+  <main>
+    <section id="about" class="tab-content active">
+      <h2>Что такое наш Телеграм Бот?</h2>
+      <p>Наш бот — это удобный помощник, который показывает расписание групп по нашему учебному направлению. Написан с использованием <strong>aiogram</strong> — современной библиотеки для разработки Telegram ботов на Python.</p>
+      <img src="https://cdn-icons-png.flaticon.com/512/2111/2111646.png" alt="Telegram bot" class="image-center" />
+      <p>Он позволяет быстро получать актуальное расписание, не заходя в сложные системы, а просто написав боту в Телеграме.</p>
+    </section>
+
+    <section id="process" class="tab-content">
+      <h2>Процесс создания</h2>
+      <ol>
+        <li>Постановка целей — сделать удобный и быстрый доступ к расписанию через Telegram.</li>
+        <li>Выбор технологий — Python + aiogram для надёжной и быстрой разработки.</li>
+        <li>Разработка логики — реализация обработки команд и отображения расписания.</li>
+        <li>Тестирование и исправления — чтобы бот работал корректно и без сбоев.</li>
+        <li>Запуск и сопровождение — обновление расписания и добавление новых функций.</li>
+      </ol>
+      <img src="https://cdn-icons-png.flaticon.com/512/888/888879.png" alt="Process" class="image-center" />
+    </section>
+
+    <section id="features" class="tab-content">
+      <h2>Функции бота и примеры работы</h2>
+      <ul>
+        <li>Показ расписания групп по направлениям.</li>
+        <li>Поиск расписания по дате или группе.</li>
+        <li>Уведомления об изменениях в расписании.</li>
+        <li>Интерактивное меню для удобного навигации.</li>
+      </ul>
+      <img src="https://cdn-icons-png.flaticon.com/512/1006/1006559.png" alt="Features" class="image-center" />
+      <h3>Пример команды:</h3>
+      <pre>
+/schedule group_123
+      </pre>
+      <p>Бот покажет расписание для группы с ID <code>group_123</code>.</p>
+    </section>
+
+    <section id="team" class="tab-content">
+      <h2>Наша команда</h2>
+      <div class="team-container">
+        <div class="team-member">
+          <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Иван Иванов" />
+          <h3>Иван Иванов</h3>
+          <p>Главный разработчик и архитектор бота.</p>
+        </div>
+        <div class="team-member">
+          <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Мария Смирнова" />
+          <h3>Мария Смирнова</h3>
+          <p>Дизайнер интерфейсов и UX-специалист.</p>
+        </div>
+        <div class="team-member">
+          <img src="https://randomuser.me/api/portraits/men/54.jpg" alt="Алексей Петров" />
+          <h3>Алексей Петров</h3>
+          <p>Тестировщик и специалист по качеству.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="feedback" class="tab-content">
+      <h2>Обратная связь</h2>
+      <p>Если у вас есть предложения или вопросы, напишите нам:</p>
+      <form id="feedback-form" novalidate>
+        <label for="name">Ваше имя:</label>
+        <input type="text" id="name" name="name" placeholder="Иван" required />
+
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" placeholder="example@mail.com" required />
+
+        <label for="message">Сообщение:</label>
+        <textarea id="message" name="message" rows="5" placeholder="Напишите ваше сообщение..." required></textarea>
+
+        <button type="submit">Отправить</button>
+      </form>
+      <p id="form-message" class="form-message"></p>
+    </section>
+  </main>
+
+  <footer>
+    <p>© 2025 Команда разработчиков бота</p>
+  </footer>
+
+  <script src="scripts.js"></script>
+</body>
+</html>
